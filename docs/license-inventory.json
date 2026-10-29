@@ -1,0 +1,172 @@
+[
+  {
+    "name": "@img/colour",
+    "version": "1.1.0",
+    "path": "node_modules/@img/colour",
+    "via": "dependency",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE.md"
+    ]
+  },
+  {
+    "name": "@img/sharp-win32-x64",
+    "version": "0.35.5",
+    "path": "node_modules/@img/sharp-win32-x64",
+    "via": "dependency",
+    "license": "Apache-2.0 AND LGPL-3.0-or-later",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "@photostructure/tz-lookup",
+    "version": "11.7.0",
+    "path": "node_modules/@photostructure/tz-lookup",
+    "via": "dependency",
+    "license": "CC0-1.0",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "@types/luxon",
+    "version": "3.7.6",
+    "path": "node_modules/@types/luxon",
+    "via": "dependency",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "batch-cluster",
+    "version": "19.5.0",
+    "path": "node_modules/batch-cluster",
+    "via": "dependency",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "detect-libc",
+    "version": "2.1.2",
+    "path": "node_modules/detect-libc",
+    "via": "dependency",
+    "license": "Apache-2.0",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "electron",
+    "version": "45.0.0",
+    "path": "node_modules/electron",
+    "via": "runtime (Chromium + Node.js; see LICENSES.chromium.html in the app folder)",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "exiftool-vendored",
+    "version": "39.0.1",
+    "path": "node_modules/exiftool-vendored",
+    "via": "dependency",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "exiftool-vendored.exe",
+    "version": "13.59.3",
+    "path": "node_modules/exiftool-vendored.exe",
+    "via": "dependency",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "he",
+    "version": "1.2.0",
+    "path": "node_modules/he",
+    "via": "dependency",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE-MIT.txt"
+    ]
+  },
+  {
+    "name": "luxon",
+    "version": "3.7.2",
+    "path": "node_modules/luxon",
+    "via": "dependency",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE.md"
+    ]
+  },
+  {
+    "name": "react",
+    "version": "19.3.1",
+    "path": "node_modules/react",
+    "via": "bundled-in-renderer",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "react-dom",
+    "version": "19.3.1",
+    "path": "node_modules/react-dom",
+    "via": "bundled-in-renderer",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "scheduler",
+    "version": "0.28.0",
+    "path": "node_modules/scheduler",
+    "via": "bundled-in-renderer",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "semver",
+    "version": "7.8.5",
+    "path": "node_modules/semver",
+    "via": "dependency",
+    "license": "ISC",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "sharp",
+    "version": "0.35.5",
+    "path": "node_modules/sharp",
+    "via": "dependency",
+    "license": "Apache-2.0",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "zod",
+    "version": "4.6.7",
+    "path": "node_modules/zod",
+    "via": "dependency",
+    "license": "MIT",
+    "licenseFiles": [
+      "LICENSE"
+    ]
+  }
+]

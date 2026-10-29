@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: EventStory Cull pilot backend - authenticated, quota-limited proxy to Rekognition DetectFaces (no image storage)
+
+Parameters:
+  GlobalMonthlyLimit:
+    Type: Number
+    Default: 4000
+    Description: Shared AWS-call budget per calendar month (UTC) for the whole pilot
+  MaxImageBytes:
+    Type: Number
+    Default: 2621440
+  ResultTtlHours:
+    Type: Number
+    Default: 24
+  UseReservedConcurrency:
+    Type: String
+    Default: 'true'
+    AllowedValues: ['true', 'false']
+    Description: New AWS accounts with a 10-concurrency limit cannot reserve any; set 'false' there
+
+Conditions:
+  ReserveConcurrency: !Equals [!Ref UseReservedConcurrency, 'true']
+
+Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+      SSESpecification:
+        SSEEnabled: true
+
+  FaceAnalysisLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AWS::StackName}-face-analysis
+      RetentionInDays: 14
+
+  FaceAnalysisFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: FaceAnalysisLogs
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-face-analysis
+      Runtime: nodejs24.x
+      Architectures: [arm64]
+      Handler: handler.handler
+      CodeUri: ./
+      MemorySize: 512
+      Timeout: 45
+      ReservedConcurrentExecutions: !If [ReserveConcurrency, 2, !Ref AWS::NoValue]
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          GLOBAL_MONTHLY_LIMIT: !Ref GlobalMonthlyLimit
+          MAX_IMAGE_BYTES: !Ref MaxImageBytes
+          RESULT_TTL_HOURS: !Ref ResultTtlHours
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - Statement:
+            - Effect: Allow
+              Action: rekognition:DetectFaces
+              Resource: '*'
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: BUFFERED
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2023
+        Sourcemap: false
+        EntryPoints:
+          - src/handler.ts
+
+Outputs:
+  FunctionUrl:
+    Description: HTTPS endpoint to configure in the desktop app
+    Value: !GetAtt FaceAnalysisFunctionUrl.FunctionUrl
+  TableName:
+    Value: !Ref Table

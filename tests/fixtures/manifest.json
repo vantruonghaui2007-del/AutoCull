@@ -1,0 +1,229 @@
+{
+  "schema": 1,
+  "note": "Expected values were read with the vendored ExifTool CLI before implementation. Binaries live in tests/fixtures/files (git-ignored); restore with `npm run fixtures`.",
+  "entries": [
+    {
+      "id": "cr2-canon-5d3",
+      "file": "cr2/5G4A9394.CR2",
+      "kind": "cr2",
+      "source": {
+        "type": "url",
+        "url": "https://raw.pixls.us/data/Canon/EOS%205D%20Mark%20III/5G4A9394.CR2",
+        "license": "CC0-1.0 via raw.pixls.us"
+      },
+      "sha256": "ec069b178b9383d80c72f8cdc1b79bd54ca451e7c20793b109d8ad73bef6bdf6",
+      "make": "Canon",
+      "model": "Canon EOS 5D Mark III",
+      "compression": "CR2 lossless JPEG (Compression 6)",
+      "expectedOrientation": 1,
+      "expectedPreview": "embedded",
+      "expectedTimeSource": "exif-no-zone"
+    },
+    {
+      "id": "cr3-canon-r6-craw",
+      "file": "cr3/Canon_EOS_R6_CRAW_ISO_100_nocrop_nodual.CR3",
+      "kind": "cr3",
+      "source": {
+        "type": "url",
+        "url": "https://raw.pixls.us/data/Canon/EOS%20R6/Canon_EOS_R6_CRAW_ISO_100_nocrop_nodual.CR3",
+        "license": "CC0-1.0 via raw.pixls.us"
+      },
+      "sha256": "4775df76433b1e5844bc7a42b95d93efc8438c0a4cd9681e120e23fe3e3007e8",
+      "make": "Canon",
+      "model": "Canon EOS R6",
+      "compression": "CR3 C-RAW (lossy)",
+      "expectedOrientation": 1,
+      "expectedPreview": "embedded",
+      "expectedTimeSource": "exif-explicit"
+    },
+    {
+      "id": "nef-nikon-d750",
+      "file": "nef/compressed_12_bit.NEF",
+      "kind": "nef",
+      "source": {
+        "type": "url",
+        "url": "https://raw.pixls.us/data/Nikon/D750/compressed_12_bit.NEF",
+        "license": "CC0-1.0 via raw.pixls.us"
+      },
+      "sha256": "e4a3f85e014275fc0a47600a373af95ec850872a5f6cf87649bcaa42b77ef2e4",
+      "make": "NIKON CORPORATION",
+      "model": "NIKON D750",
+      "compression": "NEF lossy compressed 12-bit (NEFCompression 4)",
+      "expectedOrientation": 1,
+      "expectedPreview": "embedded",
+      "expectedTimeSource": "exif-no-zone"
+    },
+    {
+      "id": "raf-fuji-xt3",
+      "file": "raf/AFXT2720.RAF",
+      "kind": "raf",
+      "source": {
+        "type": "url",
+        "url": "https://raw.pixls.us/data/Fujifilm/X-T3/AFXT2720.RAF",
+        "license": "CC0-1.0 via raw.pixls.us"
+      },
+      "sha256": "24abd27b4a200f3170ea1579672944b807d0eb35bf21422a3937bb644f27f2eb",
+      "make": "FUJIFILM",
+      "model": "X-T3",
+      "compression": "RAF uncompressed (RAFCompression 0)",
+      "expectedOrientation": 1,
+      "expectedPreview": "embedded",
+      "expectedTimeSource": "exif-no-zone"
+    },
+    {
+      "id": "dng-adobe-5d3",
+      "file": "dng/5G4A9394-compressed-lossless.DNG",
+      "kind": "dng",
+      "source": {
+        "type": "url",
+        "url": "https://raw.pixls.us/data/Adobe%20DNG%20Converter/Canon%20EOS%205D%20Mark%20III/5G4A9394-compressed-lossless.DNG",
+        "license": "CC0-1.0 via raw.pixls.us"
+      },
+      "sha256": "3118116735d4f6dd01fd9d6a80ee9aac52a2c2debdc6dcd112bd5e3059044a55",
+      "make": "Canon",
+      "model": "Canon EOS 5D Mark III",
+      "compression": "DNG lossless (Adobe DNG Converter)",
+      "expectedOrientation": 1,
+      "expectedPreview": "embedded",
+      "expectedTimeSource": "exif-no-zone"
+    },
+    {
+      "id": "arw-sony-a7c-1",
+      "file": "arw/ACH07358.ARW",
+      "kind": "arw",
+      "source": {
+        "type": "user",
+        "localPath": "C:\\Users\\vantr\\OneDrive\\Ảnh\\MinhNguyen\\ACH07358.ARW",
+        "license": "Ảnh của người dùng, chỉ dùng kiểm thử nội bộ, không phân phối"
+      },
+      "sha256": "f80f9438e516652f54e08fd022e76e840e43a78377b44f078a1ee68b4d56d3ce",
+      "make": "SONY",
+      "model": "ILCE-7C",
+      "compression": "ARW compressed (SonyRawFileType 2)",
+      "expectedOrientation": 1,
+      "expectedPreview": "embedded",
+      "expectedTimeSource": "exif-explicit"
+    },
+    {
+      "id": "jpeg-sony-a7c-1",
+      "file": "arw/ACH07358.JPG",
+      "kind": "jpeg",
+      "source": {
+        "type": "user",
+        "localPath": "C:\\Users\\vantr\\OneDrive\\Ảnh\\MinhNguyen\\ACH07358.JPG",
+        "license": "Ảnh của người dùng, chỉ dùng kiểm thử nội bộ, không phân phối"
+      },
+      "sha256": "ac6ce87ad374de3136c91621c54f59142b25fc754d5fbe0bad1f762ad3efad0b",
+      "make": "SONY",
+      "model": "ILCE-7C",
+      "compression": "JPEG",
+      "expectedOrientation": 1,
+      "expectedPreview": "jpeg-original",
+      "expectedTimeSource": "exif-explicit"
+    },
+    {
+      "id": "arw-sony-a7c-2",
+      "file": "arw/ACH07359.ARW",
+      "kind": "arw",
+      "source": {
+        "type": "user",
+        "localPath": "C:\\Users\\vantr\\OneDrive\\Ảnh\\MinhNguyen\\ACH07359.ARW",
+        "license": "Ảnh của người dùng, chỉ dùng kiểm thử nội bộ, không phân phối"
+      },
+      "sha256": "508280ff939cae9ad5cf9d94138603a03b16709f23e8f781234a47419278b8ce",
+      "make": "SONY",
+      "model": "ILCE-7C",
+      "compression": "ARW compressed (SonyRawFileType 2)",
+      "expectedOrientation": 1,
+      "expectedPreview": "embedded",
+      "expectedTimeSource": "exif-explicit"
+    },
+    {
+      "id": "jpeg-sony-a7c-2",
+      "file": "arw/ACH07359.JPG",
+      "kind": "jpeg",
+      "source": {
+        "type": "user",
+        "localPath": "C:\\Users\\vantr\\OneDrive\\Ảnh\\MinhNguyen\\ACH07359.JPG",
+        "license": "Ảnh của người dùng, chỉ dùng kiểm thử nội bộ, không phân phối"
+      },
+      "sha256": "3b1186def10a99624c0c1f8644456c79ae572d401bdff0c2560882539543c869",
+      "make": "SONY",
+      "model": "ILCE-7C",
+      "compression": "JPEG",
+      "expectedOrientation": 1,
+      "expectedPreview": "jpeg-original",
+      "expectedTimeSource": "exif-explicit"
+    },
+    {
+      "id": "arw-sony-a7c-portrait",
+      "file": "arw/ACH07383.ARW",
+      "kind": "arw",
+      "source": {
+        "type": "user",
+        "localPath": "C:\\Users\\vantr\\OneDrive\\Ảnh\\MinhNguyen\\ACH07383.ARW",
+        "license": "Ảnh của người dùng, chỉ dùng kiểm thử nội bộ, không phân phối"
+      },
+      "sha256": "1326992fba74c625c7babf6992c2a74861d491d3a8917777fc1182ca42971690",
+      "make": "SONY",
+      "model": "ILCE-7C",
+      "compression": "ARW compressed (SonyRawFileType 2)",
+      "expectedOrientation": 8,
+      "expectedPreview": "embedded",
+      "expectedTimeSource": "exif-explicit"
+    },
+    {
+      "id": "jpeg-sony-a7c-portrait",
+      "file": "arw/ACH07383.JPG",
+      "kind": "jpeg",
+      "source": {
+        "type": "user",
+        "localPath": "C:\\Users\\vantr\\OneDrive\\Ảnh\\MinhNguyen\\ACH07383.JPG",
+        "license": "Ảnh của người dùng, chỉ dùng kiểm thử nội bộ, không phân phối"
+      },
+      "sha256": "41306a717899abf2bc33cbc561cedd34a770bd833d09b507673984fa082d7a59",
+      "make": "SONY",
+      "model": "ILCE-7C",
+      "compression": "JPEG",
+      "expectedOrientation": 8,
+      "expectedPreview": "jpeg-original",
+      "expectedTimeSource": "exif-explicit"
+    },
+    {
+      "id": "arw-truncated",
+      "file": "broken/ACH07358-truncated.ARW",
+      "kind": "arw",
+      "source": {
+        "type": "derived",
+        "derivedFrom": "arw-sony-a7c-1",
+        "transform": "truncate:4096",
+        "license": "Tạo từ ảnh người dùng (4 KiB đầu: còn header, mất mọi ảnh nhúng), chỉ dùng kiểm thử"
+      },
+      "sha256": "5b8f4663e513261861e0a8de36d085f52bd1e50d08e56d70074784561ac1bf5a",
+      "make": "SONY",
+      "model": "ILCE-7C",
+      "compression": "truncated ARW",
+      "expectedOrientation": null,
+      "expectedPreview": "NO_PREVIEW",
+      "expectedTimeSource": null
+    },
+    {
+      "id": "jpeg-no-exif",
+      "file": "broken/no-exif.jpg",
+      "kind": "jpeg",
+      "source": {
+        "type": "derived",
+        "derivedFrom": "jpeg-sony-a7c-2",
+        "transform": "strip-metadata:1600",
+        "license": "Tạo từ ảnh người dùng (bỏ metadata), chỉ dùng kiểm thử"
+      },
+      "sha256": "cc4e63097f85a611bfc7599334d36bd0ca7d52bdcc839fc04f3c133ccad62b5b",
+      "make": null,
+      "model": null,
+      "compression": "JPEG without EXIF",
+      "expectedOrientation": null,
+      "expectedPreview": "jpeg-original",
+      "expectedTimeSource": "missing"
+    }
+  ]
+}

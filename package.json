@@ -1,0 +1,43 @@
+{
+  "name": "eventstory-cull",
+  "productName": "EventStory Cull",
+  "version": "0.2.0",
+  "description": "Lọc ảnh RAW sự kiện theo cụm và mục tiêu bàn giao trước Lightroom, giữ nguyên file nguồn.",
+  "author": "EventStory",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "tsc -p tsconfig.node.json --noEmit && tsc -p tsconfig.web.json --noEmit",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:electron": "npm run build && playwright test",
+    "test:installed": "node scripts/smoke-installed.mjs",
+    "fixtures": "node scripts/fixtures.mts",
+    "package:dir": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "1.2.0",
+    "exiftool-vendored": "39.0.1",
+    "sharp": "0.35.5",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0",
+    "electron-vite": "6.0.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

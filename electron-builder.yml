@@ -1,0 +1,72 @@
+appId: vn.eventstory.cull
+productName: EventStory Cull
+copyright: Copyright © 2026 EventStory
+directories:
+  output: release/${version}
+  buildResources: build
+files:
+  - out/**
+  - package.json
+  - "!**/*.map"
+extraResources:
+  - from: build/icon.png
+    to: icon.png
+  - from: LICENSES
+    to: licenses
+  - from: docs/USER_GUIDE.md
+    to: docs/USER_GUIDE.md
+  - from: docs/LOCAL_ANALYSIS.md
+    to: docs/LOCAL_ANALYSIS.md
+  - from: node_modules/sharp/LICENSE
+    to: licenses/Apache-2.0.txt
+  # LibRaw (CDDL-1.0): notices, the exact upstream source and build instructions ship with the app.
+  - from: native/third_party/LibRaw-0.22.3.tar.gz
+    to: licenses/LibRaw/LibRaw-0.22.3.tar.gz
+  - from: native/third_party/LibRaw-0.22.3/COPYRIGHT
+    to: licenses/LibRaw/COPYRIGHT
+  - from: native/third_party/LibRaw-0.22.3/LICENSE.CDDL
+    to: licenses/LibRaw/LICENSE.CDDL
+  - from: native/README.md
+    to: licenses/LibRaw/BUILD.md
+asar: true
+# ExifTool cannot run from inside an ASAR archive; Sharp loads native libvips from @img.
+asarUnpack:
+  - "**/node_modules/exiftool-vendored.exe/**"
+  - "**/node_modules/exiftool-vendored.pl/**"
+  - "**/node_modules/sharp/**"
+  - "**/node_modules/@img/**"
+npmRebuild: false
+win:
+  icon: build/icon.ico
+  extraResources:
+    - from: native/bin/win32-x64
+      to: bin
+      filter: ['eventstory-raw.exe']
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+  artifactName: EventStory-Cull-${version}-win-${arch}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  artifactName: EventStory-Cull-${version}-win-${arch}-setup.${ext}
+mac:
+  icon: build/icon.png
+  category: public.app-category.photography
+  extraResources:
+    - from: native/bin/darwin-${arch}
+      to: bin
+      filter: ['eventstory-raw']
+  hardenedRuntime: true
+  # Development builds are unsigned. Release signing/notarization runs only on macOS with
+  # CSC_LINK / CSC_KEY_PASSWORD / APPLE_* provided by the environment, never stored here.
+  identity: null
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+    - target: zip
+      arch: [arm64, x64]
+  artifactName: EventStory-Cull-${version}-mac-${arch}.${ext}

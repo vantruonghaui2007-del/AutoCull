@@ -1,0 +1,27 @@
+{
+  "name": "eventstory-cull-backend",
+  "version": "0.2.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "description": "Pilot backend: authenticated, quota-limited, idempotent proxy to Amazon Rekognition DetectFaces. Stores no images.",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "sam build",
+    "token": "node scripts/token.mjs",
+    "live-test": "node scripts/live-test.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.1158.0",
+    "@aws-sdk/client-rekognition": "3.1158.0",
+    "@aws-sdk/lib-dynamodb": "3.1158.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.164",
+    "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  }
+}

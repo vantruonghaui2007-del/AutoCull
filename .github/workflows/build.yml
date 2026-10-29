@@ -1,0 +1,68 @@
+# Manual packaging; private fixtures and external MediaPipe model are not included.
+name: build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows-x64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test:unit
+      - uses: ilammy/msvc-dev-cmd@v1
+      - run: powershell -ExecutionPolicy Bypass -File native/build-raw-helper.ps1
+      # Integration/Electron tests need the RAW fixtures (CC0 + user samples); see docs/RELEASE_CHECKLIST.md.
+      - run: npm run dist
+      - run: node scripts/smoke-installed.mjs --app release/0.2.0/win-unpacked
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: |
+            release/*/*.exe
+            release/*/*.zip
+            ../work/smoke/*.json
+
+  macos:
+    strategy:
+      matrix:
+        include:
+          - runner: macos-14 # Apple Silicon
+            arch: arm64
+            outdir: mac-arm64
+          - runner: macos-13 # Intel
+            arch: x64
+            outdir: mac
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test:unit
+      - run: npm run build
+      - run: sh native/build-raw-helper.sh
+      # Unsigned development build unless signing secrets are configured for this repository.
+      - run: npx electron-builder --mac --${{ matrix.arch }}
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - run: node scripts/smoke-installed.mjs --app "release/0.2.0/${{ matrix.outdir }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.arch }}
+          path: |
+            release/*/*.dmg
+            release/*/*.zip
