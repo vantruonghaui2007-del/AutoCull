@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { AiQuotaView, AiSettingsView } from '../../shared/contracts';
 import { api } from '../lib';
+import { Icon } from './Icon';
 
 export function AiSettingsDialog(props: { onClose: () => void }) {
   const [view, setView] = useState<AiSettingsView | null>(null);
@@ -48,8 +49,11 @@ export function AiSettingsDialog(props: { onClose: () => void }) {
 
   return (
     <div className="modal" role="dialog" aria-label="Phân tích AI" data-testid="ai-settings">
-      <div className="modal-card">
-        <h3>Phân tích khuôn mặt (pilot)</h3>
+      <div className="modal-card lg">
+        <h3>
+          <Icon name="cloud" size={20} />
+          Phân tích khuôn mặt (pilot)
+        </h3>
         <label className="field">
           Địa chỉ dịch vụ (HTTPS)
           <input data-testid="ai-endpoint" value={endpoint} onChange={(e) => setEndpoint(e.target.value)} placeholder="https://….lambda-url.ap-southeast-1.on.aws/" />
@@ -66,7 +70,7 @@ export function AiSettingsDialog(props: { onClose: () => void }) {
           />
         </label>
         <div className="row buttons">
-          <button data-testid="ai-save" onClick={() => void save()} disabled={!endpoint.trim()}>
+          <button data-testid="ai-save" className="primary" onClick={() => void save()} disabled={!endpoint.trim()}>
             Lưu
           </button>
           {view?.hasToken && (

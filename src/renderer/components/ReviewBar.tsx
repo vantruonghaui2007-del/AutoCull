@@ -34,12 +34,13 @@ export function ReviewBar(props: {
   return (
     <aside className="reviewbar" aria-label="Duyệt ảnh">
       <div className="big" onClick={props.onOpenLoupe} title="Bấm để xem lớn">
+        <span className="big-hint" aria-hidden="true">Space · xem lớn</span>
         {v.preview ? <img src={v.preview.url} alt={basename(v.primary.relativePath)} /> : <span className="noimg">Không có preview dùng được</span>}
       </div>
       {multi && <p className="multi">Đang chọn {ids.length} ảnh — thao tác áp cho tất cả.</p>}
       <h3 title={v.primary.relativePath}>{basename(v.primary.relativePath)}</h3>
       <CullPanel view={v} ids={ids} run={props.run} onCompareBest={props.onCompareBest} />
-      <dl className="facts">
+      <dl className="facts rb-card">
         <dt>Tệp</dt>
         <dd>
           {v.primary.relativePath} ({formatBytes(v.primary.bytes)})
@@ -79,13 +80,14 @@ export function ReviewBar(props: {
 
       <FacePanel view={v} busy={props.analyzing} count={ids.length} onAnalyze={(retry) => props.onAnalyze(ids, retry)} />
 
+      <div className="decide rb-card">
       <div className="row" role="group" aria-label="Quyết định">
         <span className="label">Quyết định:</span>
         <strong data-testid="review-state">{STATE_LABEL[d.state]}</strong>
       </div>
       <div className="row buttons">
         {STATES.map(({ s, key }) => (
-          <button key={s} className={d.state === s ? 'on' : ''} onClick={() => void props.run({ type: 'set-review', assetIds: ids, state: s })}>
+          <button key={s} data-tone={s} className={d.state === s ? 'on' : ''} onClick={() => void props.run({ type: 'set-review', assetIds: ids, state: s })}>
             {STATE_LABEL[s]} <kbd>{key}</kbd>
           </button>
         ))}
@@ -95,7 +97,7 @@ export function ReviewBar(props: {
           Sao: <strong data-testid="rating-value">{d.rating}</strong>
         </span>
         {[0, 1, 2, 3, 4, 5].map((n) => (
-          <button key={n} className={d.rating === n ? 'on' : ''} onClick={() => void props.run({ type: 'set-rating', assetIds: ids, rating: n })}>
+          <button key={n} className={`star-btn${d.rating === n ? ' on' : ''}`} onClick={() => void props.run({ type: 'set-rating', assetIds: ids, rating: n })}>
             {n === 0 ? '0' : '★'.repeat(n)}
           </button>
         ))}
@@ -107,6 +109,7 @@ export function ReviewBar(props: {
             {label}
           </button>
         ))}
+      </div>
       </div>
       <details className="legacy small" data-testid="legacy-review">
         <summary>Dữ liệu cũ (v0.1): mục tiêu và bộ chọn</summary>

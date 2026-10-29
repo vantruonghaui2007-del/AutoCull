@@ -1,15 +1,26 @@
-# Manual packaging; private fixtures and external MediaPipe model are not included.
+# Packages the desktop app: Windows (NSIS .exe + .zip) and macOS (.dmg + .zip, Apple Silicon and Intel).
+# Run it from the Actions tab ("Run workflow"), or push a tag like v0.2.1 to also attach the files to a
+# GitHub Release. Private fixtures and the external MediaPipe model are not included.
 name: build
 
 on:
   workflow_dispatch:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   windows-x64:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -19,30 +30,43 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
       - run: powershell -ExecutionPolicy Bypass -File native/build-raw-helper.ps1
       # Integration/Electron tests need the RAW fixtures (CC0 + user samples); see docs/RELEASE_CHECKLIST.md.
-      - run: npm run dist
-      - run: node scripts/smoke-installed.mjs --app release/0.2.0/win-unpacked
-      - uses: actions/upload-artifact@v4
+      # Publishing is the release job's work: never let electron-builder upload on its own.
+      - run: npm run dist -- --publish never
+      - name: Read version
+        id: version
+        shell: bash
+        run: echo "value=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      # Upload before the smoke test so a failing smoke run still leaves the installer to inspect.
+      - uses: actions/upload-artifact@v5
         with:
           name: windows-x64
+          if-no-files-found: error
           path: |
             release/*/*.exe
             release/*/*.zip
-            ../work/smoke/*.json
+      - run: node scripts/smoke-installed.mjs --app "release/${{ steps.version.outputs.value }}/win-unpacked" --out work/smoke
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: smoke-windows-x64
+          path: work/smoke/*.json
+          if-no-files-found: ignore
 
   macos:
     strategy:
+      fail-fast: false
       matrix:
         include:
-          - runner: macos-14 # Apple Silicon
+          - runner: macos-15 # Apple Silicon
             arch: arm64
             outdir: mac-arm64
-          - runner: macos-13 # Intel
+          - runner: macos-15-intel # Intel
             arch: x64
             outdir: mac
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -51,18 +75,49 @@ jobs:
       - run: npm run test:unit
       - run: npm run build
       - run: sh native/build-raw-helper.sh
+        env:
+          ARCH: ${{ matrix.arch }}
       # Unsigned development build unless signing secrets are configured for this repository.
-      - run: npx electron-builder --mac --${{ matrix.arch }}
+      # Name the arch per target: the config lists both, which would build x64 without its helper.
+      - run: npx electron-builder --mac dmg:${{ matrix.arch }} zip:${{ matrix.arch }} --publish never
         env:
           CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      - run: node scripts/smoke-installed.mjs --app "release/0.2.0/${{ matrix.outdir }}"
-      - uses: actions/upload-artifact@v4
+      - name: Read version
+        id: version
+        run: echo "value=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v5
         with:
           name: macos-${{ matrix.arch }}
+          if-no-files-found: error
           path: |
             release/*/*.dmg
             release/*/*.zip
+      - run: node scripts/smoke-installed.mjs --app "release/${{ steps.version.outputs.value }}/${{ matrix.outdir }}" --out work/smoke
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: smoke-macos-${{ matrix.arch }}
+          path: work/smoke/*.json
+          if-no-files-found: ignore
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows-x64, macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          path: dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: |
+            dist/**/*.exe
+            dist/**/*.dmg
+            dist/**/*.zip

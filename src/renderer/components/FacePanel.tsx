@@ -60,7 +60,7 @@ export function FacePanel(props: { view: AssetView; onAnalyze: (retryFailed?: bo
       </ol>
     );
   return (
-    <section className="facepanel" data-testid="face-summary">
+    <section className="facepanel rb-card" data-testid="face-summary">
       <div className="row">
         <span className="label">Khuôn mặt:</span>
         {a?.provider?.startsWith('mediapipe-') && <span className="dim small">MediaPipe local · ước lượng thử nghiệm</span>}

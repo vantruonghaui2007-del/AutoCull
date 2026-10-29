@@ -34,7 +34,7 @@ export function CullPanel(props: { view: AssetView; ids: string[]; run: RunComma
   const c = props.view.cull;
   const q = c.quality;
   return (
-    <section className={`cullpanel list-${c.list}`} data-testid="cull-panel">
+    <section className={`cullpanel rb-card list-${c.list}`} data-testid="cull-panel">
       <div className="row">
         <strong className={`listtag list-${c.list}`}>{LIST_LABEL[c.list]}</strong>
         <span className="dim small">
@@ -58,7 +58,10 @@ export function CullPanel(props: { view: AssetView; ids: string[]; run: RunComma
                 <td>
                   {label} <span className="dim">({weight}%)</span>
                 </td>
-                <td className="score">{criterionText(q[key])}</td>
+                <td className="score">
+                  {q[key].state === 'known' && <span className="meter" aria-hidden="true"><span style={{ width: `${Math.max(0, Math.min(100, q[key].score ?? 0))}%` }} /></span>}
+                  {criterionText(q[key])}
+                </td>
                 <td className="dim">{q[key].note ?? ''}</td>
               </tr>
             ))}
@@ -68,10 +71,10 @@ export function CullPanel(props: { view: AssetView; ids: string[]; run: RunComma
         <p className="dim small">Chưa chạy AutoCull cho ảnh này.</p>
       )}
       <div className="row buttons">
-        <button data-testid="cull-keep" className={c.source === 'manual-keep' ? 'on' : ''} onClick={() => void props.run({ type: 'set-review', assetIds: props.ids, state: 'keep' })}>
+        <button data-testid="cull-keep" data-tone="keep" className={c.source === 'manual-keep' ? 'on' : ''} onClick={() => void props.run({ type: 'set-review', assetIds: props.ids, state: 'keep' })}>
           Chọn ảnh này
         </button>
-        <button data-testid="cull-pass" className={c.source === 'manual-excluded' ? 'on' : ''} onClick={() => void props.run({ type: 'set-review', assetIds: props.ids, state: 'pass' })}>
+        <button data-testid="cull-pass" data-tone="pass" className={c.source === 'manual-excluded' ? 'on' : ''} onClick={() => void props.run({ type: 'set-review', assetIds: props.ids, state: 'pass' })}>
           Bỏ ảnh này
         </button>
         <button data-testid="cull-auto" onClick={() => void props.run({ type: 'set-review', assetIds: props.ids, state: 'unreviewed' })} title="Bỏ lựa chọn thủ công, dùng lại đề xuất tự động">

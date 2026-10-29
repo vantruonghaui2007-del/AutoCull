@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ExportPlanView, ExportReport, ExportSet } from '../../shared/contracts';
 import { api, formatBytes } from '../lib';
 import { PACK_LABEL } from './PackPanel';
+import { Icon } from './Icon';
 
 const CODE_LABEL: Record<string, string> = {
   SOURCE_MISSING: 'Thiếu tệp nguồn (thẻ/ổ đã tháo?)',
@@ -69,8 +70,11 @@ export function ExportDialog(props: { projectId: string; packId: ExportSet; onCl
 
   return (
     <div className="modal" role="dialog" aria-label="Xuất bộ chọn" data-testid="export-dialog">
-      <div className="modal-card">
-        <h3>{title}</h3>
+      <div className="modal-card lg">
+        <h3>
+          <Icon name="export" size={20} />
+          {title}
+        </h3>
         {!plan && !jobId && (
           <>
             <label className="opt">
@@ -82,7 +86,7 @@ export function ExportDialog(props: { projectId: string; packId: ExportSet; onCl
             </label>
             <p className="dim small">Ứng dụng tạo một thư mục mới bên trong nơi bạn chọn; không ghi đè tệp có sẵn, không ghi vào thư mục nguồn hay thư mục dự án.</p>
             <div className="row buttons">
-              <button onClick={() => void preview()} disabled={busy} data-testid="choose-destination">
+              <button className="primary" onClick={() => void preview()} disabled={busy} data-testid="choose-destination">
                 Chọn nơi xuất và xem trước…
               </button>
               <button onClick={props.onClose}>Đóng</button>
@@ -126,7 +130,7 @@ export function ExportDialog(props: { projectId: string; packId: ExportSet; onCl
               </details>
             )}
             <div className="row buttons">
-              <button onClick={() => void start()} data-testid="start-export">
+              <button className="primary" onClick={() => void start()} data-testid="start-export">
                 Bắt đầu xuất
               </button>
               <button onClick={() => setPlan(null)}>Quay lại</button>
@@ -135,6 +139,9 @@ export function ExportDialog(props: { projectId: string; packId: ExportSet; onCl
         )}
         {jobId && !report && (
           <div data-testid="export-running">
+            <div className="progress" aria-hidden="true">
+              <span style={{ width: progress && progress.total ? `${(progress.done / progress.total) * 100}%` : '0%' }} />
+            </div>
             <p>
               Đang sao chép và kiểm tra SHA-256… {progress ? `${progress.done}/${progress.total}` : ''}
             </p>
@@ -143,7 +150,7 @@ export function ExportDialog(props: { projectId: string; packId: ExportSet; onCl
         )}
         {report && (
           <div data-testid="export-report">
-            <p>
+            <p className={`export-result result-${report.status}`}>
               Kết quả:{' '}
               <strong data-testid="export-status">
                 {report.status === 'verified'

@@ -3,7 +3,8 @@
 ## Phạm vi
 
 Mục tiêu: cải thiện UI/UX của ứng dụng desktop đang chạy, **không thay bằng bản demo web mất chức năng**.
-Giữ chỉnh sửa branding/logo hiện có. Source snapshot gồm cả local MediaPipe và các chỉnh sửa UI đang có trên máy.
+Giao diện không dùng logo: chỉ hiển thị tên sản phẩm **EventStory Cull**. Màu chủ đạo vàng mật ong/cam dịu,
+chất liệu Liquid Glass (`src/renderer/liquid.tsx` + `styles.css`); hiệu ứng chỉ là trình bày, không giữ trạng thái app. Source snapshot gồm cả local MediaPipe và các chỉnh sửa UI đang có trên máy.
 Không gọi AWS, gửi ảnh, train model, thêm chức năng chưa có hoặc thay đổi backend chỉ để đổi UI.
 
 ## Luồng chính phải giữ

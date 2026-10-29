@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { CameraView, PairCandidate, ProjectState } from '../../shared/contracts';
 import { formatOffset, localToMillis } from '../../shared/time';
 import { api, formatLocal, type RunCommand } from '../lib';
+import { Icon } from './Icon';
 
 function CameraRow(props: { cam: CameraView; projectId: string; run: RunCommand; onError: (m: string) => void }) {
   const { cam } = props;
@@ -84,8 +85,11 @@ export function SourcePanel(props: {
   const [showAmb, setShowAmb] = useState(false);
   return (
     <nav className="sourcepanel" aria-label="Nguồn và máy ảnh">
-      <section>
-        <h4>Nguồn ảnh (chỉ đọc)</h4>
+      <section className="lg">
+        <h4>
+          <Icon name="folder" size={14} />
+          Nguồn ảnh (chỉ đọc)
+        </h4>
         <ul className="sources">
           {props.state.sources.map((s) => (
             <li key={s.id} className={s.online ? '' : 'offline'}>
@@ -101,13 +105,17 @@ export function SourcePanel(props: {
             </li>
           ))}
         </ul>
-        <button data-testid="add-source" onClick={props.onAddSource}>
-          + Thêm thư mục nguồn
+        <button data-testid="add-source" className="add-source" onClick={props.onAddSource}>
+          <Icon name="folderPlus" />
+          Thêm thư mục nguồn
         </button>
       </section>
 
-      <section>
-        <h4>Cặp RAW + JPEG</h4>
+      <section className="lg">
+        <h4>
+          <Icon name="link" size={14} />
+          Cặp RAW + JPEG
+        </h4>
         {props.pairs.length === 0 ? (
           <p className="dim">Không có cặp nào chờ xác nhận.</p>
         ) : (
@@ -119,6 +127,7 @@ export function SourcePanel(props: {
             {clean.length > 0 && (
               <button
                 data-testid="confirm-pairs"
+                className="accent"
                 disabled={props.scanning}
                 title={props.scanning ? 'Chờ quét xong để đối chiếu đủ metadata' : undefined}
                 onClick={() => void props.run({ type: 'confirm-pairs', pairs: clean.map((p) => ({ rawId: p.rawId, jpegId: p.jpegId })) })}
@@ -144,8 +153,11 @@ export function SourcePanel(props: {
         )}
       </section>
 
-      <section>
-        <h4>Máy ảnh</h4>
+      <section className="lg">
+        <h4>
+          <Icon name="camera" size={14} />
+          Máy ảnh
+        </h4>
         <ul className="cameras">
           {props.state.cameras.map((c) => (
             <CameraRow key={c.cameraId} cam={c} projectId={props.projectId} run={props.run} onError={props.onError} />
