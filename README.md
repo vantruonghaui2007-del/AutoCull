@@ -46,6 +46,17 @@ npm run dist
 Source LibRaw đã pin và giấy phép đi kèm ở `native/`. Không cần đưa EXE build sẵn vào Git.
 Xem [native/README.md](native/README.md).
 
+### Build EXE/DMG bằng GitHub Actions
+
+Workflow `build` (`.github/workflows/build.yml`) đóng gói Windows (`.exe` cài đặt + `.zip`) và macOS
+(`.dmg` + `.zip`, cho Apple Silicon và Intel):
+
+- Vào tab **Actions → build → Run workflow** để chạy tay; tải file ở mục **Artifacts** của lần chạy.
+- Hoặc đẩy tag phiên bản (`git tag v0.2.1 && git push origin v0.2.1`): file được gắn vào một
+  **GitHub Release nháp** để bạn kiểm tra rồi phát hành.
+
+Bản macOS chưa ký/notarize: lần đầu mở cần chuột phải → Open, hoặc chạy `xattr -cr "/Applications/EventStory Cull.app"`.
+
 ### Bật MediaPipe local
 
 Xem [docs/LOCAL_ANALYSIS.md](docs/LOCAL_ANALYSIS.md): chọn file model đã pin trong ứng dụng, rồi chạy
