@@ -25,7 +25,8 @@ import { PackPanel, PACK_LABEL } from './components/PackPanel';
 import { SourcePanel } from './components/SourcePanel';
 import { api, isTypingTarget, STATE_LABEL } from './lib';
 import { useAssetPages } from './useAssets';
-import fitMediaLogo from './assets/logo-fitmedia.png';
+import { Icon } from './components/Icon';
+import { LiquidDefs, LiquidSeg, useLiquidPointer } from './liquid';
 
 type ScanProgress = Extract<ProgressEvent, { kind: 'scan' }>;
 type AutoCullProgress = Extract<ProgressEvent, { kind: 'autocull' }>;
@@ -55,6 +56,14 @@ function cullStatusText(running: AutoCullProgress | null, state: CullState | nul
   return `AutoCull lỗi: ${run.error ?? ''}`;
 }
 
+function Wordmark(props: { size?: 'lg' }) {
+  return (
+    <span className={`wordmark${props.size ? ` wordmark--${props.size}` : ''}`}>
+      EventStory<span className="wordmark-accent">Cull</span>
+    </span>
+  );
+}
+
 function Welcome(props: { onOpened: (s: ProjectSnapshot) => void; onError: (m: string) => void }) {
   const [name, setName] = useState('');
   const act = async (fn: () => Promise<{ ok: true; value: ProjectSnapshot | null } | { ok: false; code: string; message: string }>) => {
@@ -65,32 +74,33 @@ function Welcome(props: { onOpened: (s: ProjectSnapshot) => void; onError: (m: s
   return (
     <main className="welcome">
       <div className="welcome-hero">
-        <div className="welcome-logo-wrap">
-          <div className="brand-glow-halo" aria-hidden="true" />
-          <img src={fitMediaLogo} alt="Fit Media" className="welcome-brand-logo" />
-        </div>
-        <div className="welcome-badge">
-          <span className="badge-dot" />
-          <span>FIT MEDIA STUDIO</span>
-        </div>
-        <h1 className="welcome-title">EventStory Cull</h1>
+        <span className="welcome-eyebrow lg">
+          <span className="eyebrow-dot" />
+          Lọc ảnh sự kiện trước Lightroom
+        </span>
+        <h1 className="welcome-title">
+          <Wordmark size="lg" />
+        </h1>
         <p className="welcome-subtitle">
-          Hệ thống chọn lọc &amp; phân loại ảnh RAW sự kiện thông minh theo cụm và mục tiêu trước khi chuyển Lightroom.
-          <br />
-          <span className="dim">Ảnh gốc an toàn tuyệt đối: chỉ đọc, giữ nguyên trạng, không sửa hay đổi tên.</span>
+          Gom nhóm, chọn và xuất ảnh RAW sự kiện theo cụm và mục tiêu bàn giao.
+          <span className="welcome-safe">
+            <Icon name="shield" size={14} /> Ảnh gốc chỉ đọc — không sửa, không đổi tên.
+          </span>
         </p>
       </div>
 
       <div className="welcome-cards-grid">
         <form
-          className="card card-primary"
+          className="card card-primary lg lg-lens"
           onSubmit={(e) => {
             e.preventDefault();
             if (name.trim()) void act(() => api().createProject(name.trim()));
           }}
         >
           <div className="card-header">
-            <span className="card-icon-pill">✦</span>
+            <span className="card-icon">
+              <Icon name="sparkle" size={18} />
+            </span>
             <h2>Dự án mới</h2>
           </div>
           <label>
@@ -106,26 +116,28 @@ function Welcome(props: { onOpened: (s: ProjectSnapshot) => void; onError: (m: s
           </label>
           <button data-testid="create-project" type="submit" className="primary welcome-cta" disabled={!name.trim()}>
             <span>Tạo dự án &amp; Chọn nơi lưu…</span>
-            <span className="btn-arrow">→</span>
+            <Icon name="arrowRight" className="btn-arrow" />
           </button>
           <p className="dim small card-footnote">
             Cơ sở dữ liệu và bộ đệm xem trước (preview cache) được lưu trong thư mục riêng biệt, bảo vệ tuyệt đối thư mục ảnh nguồn.
           </p>
         </form>
 
-        <div className="card card-secondary">
+        <div className="card card-secondary lg lg-lens">
           <div className="card-header">
-            <span className="card-icon-pill">📂</span>
+            <span className="card-icon">
+              <Icon name="folder" size={18} />
+            </span>
             <h2>Tiếp tục làm việc</h2>
           </div>
           <p className="dim small card-desc">Mở lại dự án đã tạo trên máy này hoặc nạp tệp phiên từ đồng nghiệp.</p>
           <div className="welcome-action-buttons">
             <button data-testid="open-project" className="welcome-open-btn" onClick={() => void act(() => api().openProject())}>
-              <span className="btn-icon">📁</span>
+              <Icon name="folder" />
               <span>Mở dự án…</span>
             </button>
             <button data-testid="import-portable" className="welcome-portable-btn" onClick={() => void act(() => api().importPortable())}>
-              <span className="btn-icon">⚡</span>
+              <Icon name="file" />
               <span>Mở tệp phiên máy khác…</span>
             </button>
           </div>
@@ -435,96 +447,127 @@ function ProjectView(props: { snapshot: ProjectSnapshot; onClose: () => void; on
   const scanning = Object.values(scans);
   const focusGroup = currentId ? groups.find((g) => g.assetIds.includes(currentId)) : undefined;
 
-  if (!state) return <main className="loading">Đang mở dự án…</main>;
+  if (!state)
+    return (
+      <main className="loading">
+        <span className="loader" aria-hidden="true" />
+        Đang mở dự án…
+      </main>
+    );
   const ctx: PanelContext = { projectId, state, run, refresh, onError: props.onError, selectionIds, currentView, version };
   return (
     <div className="workspace">
-      <header className="topbar">
-        <div className="topbar-brand" title="Fit Media Studio">
-          <img src={fitMediaLogo} alt="Fit Media" className="topbar-logo" />
-          <span className="brand-dot-separator" />
+      <header className="topbar lg">
+        <div className="topbar-id">
+          <Wordmark />
+          <span className="topbar-sep" aria-hidden="true" />
+          <strong className="pname" title={state.snapshot.name}>{state.snapshot.name}</strong>
+          <span className="counter" data-testid="count-assets">
+            {state.logicalAssets} ảnh
+          </span>
+          <span className="counter counter--muted" data-testid="count-files">
+            {state.physicalFiles} tệp gốc
+          </span>
+          {state.snapshot.dirty && <span className="warn chip-warn">Chưa lưu được thay đổi gần nhất!</span>}
         </div>
-        <strong className="pname">{state.snapshot.name}</strong>
-        <span className="counter" data-testid="count-assets">
-          {state.logicalAssets} ảnh
-        </span>
-        <span className="counter" data-testid="count-files">
-          {state.physicalFiles} tệp gốc
-        </span>
-        {state.snapshot.dirty && <span className="warn">Chưa lưu được thay đổi gần nhất!</span>}
-        <span className="spacer" />
-        {scanning.length > 0 ? (
-          <span className="scan" data-testid="scan-progress">
-            Đang xử lý: {scanning.reduce((s, x) => s + x.done, 0)}/{scanning.reduce((s, x) => s + x.total, 0)} tệp
-            {scanning.map((x) => (
-              <button key={x.jobId} onClick={() => void api().cancelJob(x.jobId)}>
-                Hủy
-              </button>
-            ))}
-          </span>
-        ) : (
-          <span className="scan dim" data-testid="scan-idle">
-            Sẵn sàng
-          </span>
-        )}
-        {Object.values(analyses).length > 0 && (
-          <span className="scan" data-testid="analysis-progress">
-            Phân tích AI: {Object.values(analyses).reduce((s, x) => s + x.done, 0)}/{Object.values(analyses).reduce((s, x) => s + x.total, 0)}
-            {Object.keys(analyses).map((id) => (
-              <button key={id} onClick={() => void api().cancelJob(id)}>
-                Hủy
-              </button>
-            ))}
-          </span>
-        )}
-        <LocalAnalysisControls projectId={projectId} disabled={!!autocull || Object.keys(scans).length > 0 || Object.keys(analyses).length > 0}
-          onError={onError} onStarted={(runId) => { if (!finishedRuns.current.has(runId)) setAutocull({ kind: 'autocull', projectId, runId, phase: 'hashing', done: 0, total: 0 }); }} />
-        <span className={`scan${cullState?.run?.status === 'paused' && !autocull ? ' warn' : ''}`} data-testid="autocull-status" title={cullState?.run?.error ?? ''}>
-          {cullStatusText(autocull, cullState)}
-        </span>
-        {autocull ? (
-          <button data-testid="cancel-autocull" onClick={() => void api().cancelJob(autocull.runId)}>
-            Hủy AutoCull
-          </button>
-        ) : (
-          <button
-            data-testid="start-autocull"
-            className="primary"
-            disabled={scanning.length > 0}
-            title="Gom nhóm, phân tích và đề xuất ảnh giữ cho toàn bộ album. Không thay đổi lựa chọn thủ công."
-            onClick={async () => {
-              const r = await api().startAutoCull(projectId);
-              if (!r.ok) onError(r.message);
-              else if (!finishedRuns.current.has(r.value)) setAutocull((cur) => cur ?? { kind: 'autocull', projectId, runId: r.value, phase: 'hashing', done: 0, total: 0 });
-            }}
+        <div className="topbar-status">
+          {scanning.length > 0 ? (
+            <span className="scan scan--busy" data-testid="scan-progress">
+              <span className="pulse-dot" aria-hidden="true" />
+              Đang xử lý: {scanning.reduce((s, x) => s + x.done, 0)}/{scanning.reduce((s, x) => s + x.total, 0)} tệp
+              {scanning.map((x) => (
+                <button key={x.jobId} onClick={() => void api().cancelJob(x.jobId)}>
+                  Hủy
+                </button>
+              ))}
+            </span>
+          ) : (
+            <span className="scan dim" data-testid="scan-idle">
+              <span className="idle-dot" aria-hidden="true" />
+              Sẵn sàng
+            </span>
+          )}
+          {Object.values(analyses).length > 0 && (
+            <span className="scan scan--busy" data-testid="analysis-progress">
+              <span className="pulse-dot" aria-hidden="true" />
+              Phân tích AI: {Object.values(analyses).reduce((s, x) => s + x.done, 0)}/{Object.values(analyses).reduce((s, x) => s + x.total, 0)}
+              {Object.keys(analyses).map((id) => (
+                <button key={id} onClick={() => void api().cancelJob(id)}>
+                  Hủy
+                </button>
+              ))}
+            </span>
+          )}
+          <span
+            className={`scan${autocull ? ' scan--busy' : ''}${cullState?.run?.status === 'paused' && !autocull ? ' warn' : ''}`}
+            data-testid="autocull-status"
+            title={cullState?.run?.error ?? ''}
           >
-            AutoCull AWS
+            {cullStatusText(autocull, cullState)}
+          </span>
+        </div>
+        <div className="topbar-actions">
+          <div className="dock lg lg-lens" aria-label="AutoCull">
+            <LocalAnalysisControls projectId={projectId} disabled={!!autocull || Object.keys(scans).length > 0 || Object.keys(analyses).length > 0}
+              onError={onError} onStarted={(runId) => { if (!finishedRuns.current.has(runId)) setAutocull({ kind: 'autocull', projectId, runId, phase: 'hashing', done: 0, total: 0 }); }} />
+            {autocull ? (
+              <button data-testid="cancel-autocull" className="danger" onClick={() => void api().cancelJob(autocull.runId)}>
+                <Icon name="stop" />
+                Hủy AutoCull
+              </button>
+            ) : (
+              <button
+                data-testid="start-autocull"
+                className="cloud"
+                disabled={scanning.length > 0}
+                title="Gom nhóm, phân tích và đề xuất ảnh giữ cho toàn bộ album. Không thay đổi lựa chọn thủ công."
+                onClick={async () => {
+                  const r = await api().startAutoCull(projectId);
+                  if (!r.ok) onError(r.message);
+                  else if (!finishedRuns.current.has(r.value)) setAutocull((cur) => cur ?? { kind: 'autocull', projectId, runId: r.value, phase: 'hashing', done: 0, total: 0 });
+                }}
+              >
+                <Icon name="cloud" />
+                AutoCull AWS
+              </button>
+            )}
+          </div>
+          <button data-testid="export-selection" className="primary" onClick={() => setExportPack('selection')} disabled={!cullState || cullState.counts.keep === 0}>
+            <Icon name="export" />
+            Xuất ảnh đã chọn ({cullState?.counts.keep ?? 0})
           </button>
-        )}
-        <button data-testid="export-selection" onClick={() => setExportPack('selection')} disabled={!cullState || cullState.counts.keep === 0}>
-          Xuất ảnh đã chọn ({cullState?.counts.keep ?? 0})
-        </button>
-        <button data-testid="open-ai-settings" onClick={() => setAiOpen(true)}>
-          Cài đặt AWS
-        </button>
-        {scanMessages.length > 0 && (
-          <button className="warnbtn" onClick={() => setShowMessages(!showMessages)} data-testid="scan-messages">
-            Thông báo ({scanMessages.length})
-          </button>
-        )}
-        <button onClick={() => void run({ type: 'undo' })} disabled={!state.canUndo} title="Ctrl/⌘+Z">
-          Hoàn tác
-        </button>
-        <button
-          onClick={async () => {
-            const r = await api().exportPortable(projectId);
-            if (!r.ok) props.onError(r.message);
-          }}
-          title="Lưu quyết định để tiếp tục trên máy khác (không chứa ảnh)"
-        >
-          Lưu tệp phiên…
-        </button>
-        <button onClick={props.onClose}>Đóng dự án</button>
+          <div className="dock dock--tools lg" aria-label="Công cụ">
+            {scanMessages.length > 0 && (
+              <button className="warnbtn" onClick={() => setShowMessages(!showMessages)} data-testid="scan-messages">
+                <Icon name="bell" />
+                Thông báo ({scanMessages.length})
+              </button>
+            )}
+            <button className="ghost" onClick={() => void run({ type: 'undo' })} disabled={!state.canUndo} title="Ctrl/⌘+Z">
+              <Icon name="undo" />
+              Hoàn tác
+            </button>
+            <button
+              className="ghost"
+              onClick={async () => {
+                const r = await api().exportPortable(projectId);
+                if (!r.ok) props.onError(r.message);
+              }}
+              title="Lưu quyết định để tiếp tục trên máy khác (không chứa ảnh)"
+            >
+              <Icon name="save" />
+              Lưu tệp phiên…
+            </button>
+            <button className="ghost" data-testid="open-ai-settings" onClick={() => setAiOpen(true)}>
+              <Icon name="settings" />
+              Cài đặt AWS
+            </button>
+            <button className="ghost" onClick={props.onClose}>
+              <Icon name="logout" />
+              Đóng dự án
+            </button>
+          </div>
+        </div>
       </header>
       <SourcePanel
         projectId={projectId}
@@ -548,19 +591,20 @@ function ProjectView(props: { snapshot: ProjectSnapshot; onClose: () => void; on
       />
       <section className="center">
         <div className="toolbar">
-          <div className="seg" role="tablist">
+          <LiquidSeg label="Chế độ xem">
             <button className={mode === 'all' ? 'on' : ''} onClick={() => setMode('all')}>
               Tất cả ảnh
             </button>
             {LISTS.map((l) => (
               <button key={l} className={`${mode === l ? 'on' : ''} list-${l}`} onClick={() => setMode(l)} data-testid={`list-${l}`}>
+                <span className={`seg-dot dot-${l}`} aria-hidden="true" />
                 {LIST_LABEL[l]} ({cullState?.counts[l] ?? 0})
               </button>
             ))}
             <button className={mode === 'groups' ? 'on' : ''} onClick={() => setMode('groups')} data-testid="mode-groups">
               Theo cụm ({groups.filter((g) => g.assetIds.length > 1).length})
             </button>
-          </div>
+          </LiquidSeg>
           {mode !== 'groups' && (
             <>
               <select value={stateFilter} onChange={(e) => setStateFilter(e.target.value as ReviewState | '')} aria-label="Lọc theo quyết định">
@@ -576,7 +620,10 @@ function ProjectView(props: { snapshot: ProjectSnapshot; onClose: () => void; on
                   Bộ {PACK_LABEL[packFilter]} ×
                 </button>
               )}
-              <input data-testid="search" type="search" placeholder="Tìm theo tên tệp…" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
+              <label className="search">
+                <Icon name="search" />
+                <input data-testid="search" type="search" placeholder="Tìm theo tên tệp…" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
+              </label>
             </>
           )}
           {mode === 'groups' && focusGroup && (
@@ -614,7 +661,16 @@ function ProjectView(props: { snapshot: ProjectSnapshot; onClose: () => void; on
             </>
           )}
           <span className="spacer" />
-          <span className="dim small">← → ↑ ↓ · 1–5 · K X R U · Q E · C so sánh · Space xem lớn</span>
+          <span className="shortcuts dim small">
+            <kbd>←</kbd>
+            <kbd>→</kbd>
+            <kbd>↑</kbd>
+            <kbd>↓</kbd> · <kbd>1–5</kbd> · <kbd>K</kbd>
+            <kbd>X</kbd>
+            <kbd>R</kbd>
+            <kbd>U</kbd> · <kbd>Q</kbd>
+            <kbd>E</kbd> · <kbd>C</kbd> so sánh · <kbd>Space</kbd> xem lớn
+          </span>
         </div>
         {mode !== 'groups' ? (
           <AllGrid
@@ -676,7 +732,7 @@ function ProjectView(props: { snapshot: ProjectSnapshot; onClose: () => void; on
       {aiOpen && <AiSettingsDialog onClose={() => setAiOpen(false)} />}
       {showMessages && (
         <div className="modal" role="dialog" aria-label="Thông báo quét">
-          <div className="modal-card">
+          <div className="modal-card lg">
             <h3>Thông báo khi quét</h3>
             <ul className="small">
               {scanMessages.map((m, i) => (
@@ -733,16 +789,26 @@ export function App() {
   }, []);
 
   const onError = useCallback((m: string) => setNotice(m), []);
+  useLiquidPointer();
 
   return (
     <div className="app">
+      <LiquidDefs />
+      <div className="ambient" aria-hidden="true">
+        <span className="orb orb-a" />
+        <span className="orb orb-b" />
+        <span className="orb orb-c" />
+      </div>
       {notice && (
-        <div className="notice" role="alert">
-          {notice} <button onClick={() => setNotice(null)}>Đóng</button>
+        <div className="notice lg lg-lens" role="alert">
+          <span className="notice-text">{notice}</span> <button onClick={() => setNotice(null)}>Đóng</button>
         </div>
       )}
       {restoring ? (
-        <main className="loading">Đang khởi động…</main>
+        <main className="loading">
+          <span className="loader" aria-hidden="true" />
+          Đang khởi động…
+        </main>
       ) : project ? (
         <ProjectView
           key={project.id}
@@ -756,8 +822,11 @@ export function App() {
       ) : (
         <Welcome onOpened={setProject} onError={onError} />
       )}
-      <footer className="statusbar dim" data-testid="worker-status">
+      <footer className={`statusbar dim worker-${status?.worker ?? 'starting'}`} data-testid="worker-status">
+        <span className="worker-dot" aria-hidden="true" />
         {status ? `Bộ xử lý: ${status.worker} · ExifTool ${status.exiftoolVersion ?? 'không chạy được'} · Electron ${status.electronVersion}` : 'Đang khởi động…'}
+        <span className="spacer" />
+        <span className="statusbar-name">EventStory Cull{status ? ` ${status.appVersion}` : ''}</span>
       </footer>
     </div>
   );

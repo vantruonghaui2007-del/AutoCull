@@ -123,7 +123,7 @@ export function AllGrid(props: {
   return (
     <div className="grid-scroll" ref={ref} onScroll={(e) => setScrollTop(e.currentTarget.scrollTop)} data-testid="grid">
       {props.total === 0 && <p className="empty">Chưa có ảnh. Hãy thêm thư mục nguồn.</p>}
-      <div className="grid-canvas" style={{ height: rows * CELL_H }}>
+      <div className="grid-canvas" style={{ height: rows * CELL_H, width: cols * CELL_W }}>
         {cells}
       </div>
     </div>

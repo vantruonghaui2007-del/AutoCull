@@ -2,6 +2,7 @@ import { useCallback, useLayoutEffect, useRef, useState, type PointerEvent, type
 import type { AssetView, FaceAssessment } from '../../shared/contracts';
 import { reasonText } from '../../shared/reasons';
 import { LIST_LABEL, SOURCE_LABEL } from './CullPanel';
+import { Icon } from './Icon';
 
 const EYE_LABEL: Record<FaceAssessment['eyes'], string> = { open: 'mắt mở', closed: 'nhắm mắt', unknown: 'mắt chưa rõ' };
 
@@ -141,21 +142,33 @@ export function Compare(props: { assets: AssetView[]; onClose: () => void }) {
   const smallest = props.assets.reduce((m, a) => Math.min(m, a.preview ? Math.max(a.preview.width, a.preview.height) : Infinity), Infinity);
   return (
     <div className="compare" data-testid="compare" role="dialog" aria-label="So sánh ảnh">
-      <div className="compare-bar">
-        <button data-testid="zoom-out" onClick={() => zoomBy(1 / 1.5)}>−</button>
-        <span>{Math.round(view.zoom * 100)}% so với vừa khung</span>
-        <button data-testid="zoom-in" onClick={() => zoomBy(1.5)}>+</button>
-        <label className="small">
+      <div className="compare-bar lg lg-lens">
+        <span className="zoom-group">
+          <button data-testid="zoom-out" className="icon-btn" aria-label="Thu nhỏ" onClick={() => zoomBy(1 / 1.5)}>
+            <Icon name="zoomOut" />
+          </button>
+          <span className="zoom-value">{Math.round(view.zoom * 100)}% so với vừa khung</span>
+          <button data-testid="zoom-in" className="icon-btn" aria-label="Phóng to" onClick={() => zoomBy(1.5)}>
+            <Icon name="zoomIn" />
+          </button>
+        </span>
+        <label className="small toggle">
           <input type="checkbox" checked={showFaces} onChange={(e) => setShowFaces(e.target.checked)} /> Khung mặt
         </label>
-        <button onClick={() => setView({ zoom: 1, cx: 0.5, cy: 0.5 })}>Vừa khung</button>
+        <button onClick={() => setView({ zoom: 1, cx: 0.5, cy: 0.5 })}>
+          <Icon name="fit" />
+          Vừa khung
+        </button>
         {over && (
-          <span className="warn" data-testid="zoom-warning">
+          <span className="warn zoom-warning" data-testid="zoom-warning">
             Đang phóng vượt độ phân giải preview (cạnh dài {Number.isFinite(smallest) ? smallest : '?'} px) — ảnh vỡ hạt ở đây không phản ánh độ nét của RAW.
           </span>
         )}
         <span className="spacer" />
-        <button onClick={props.onClose}>Đóng (Esc)</button>
+        <button className="close-btn" onClick={props.onClose}>
+          <Icon name="close" />
+          Đóng (Esc)
+        </button>
       </div>
       <div className={`compare-panes n${props.assets.length}`}>
         {props.assets.map((a, i) => (

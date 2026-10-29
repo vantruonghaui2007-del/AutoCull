@@ -4,6 +4,7 @@ import type { AssetView, CoverageEntry, CoverageTarget, DeliveryEvent, PackId, P
 import { newId } from '../../shared/schemas';
 import type { PanelContext } from '../App';
 import { api, formatLocal } from '../lib';
+import { LiquidSeg } from '../liquid';
 
 export const PACK_LABEL: Record<PackId, string> = { quick: 'Trả nhanh', edit: 'Hậu kỳ' };
 const COVERAGE_LABEL: Record<CoverageEntry['status'], string> = {
@@ -136,13 +137,13 @@ export function PackPanel(props: { ctx: PanelContext; packFilter: PackId | null;
 
   return (
     <section className="panel packpanel" aria-label="Bộ chọn">
-      <div className="seg">
+      <LiquidSeg label="Bộ chọn">
         {(['quick', 'edit'] as const).map((p) => (
           <button key={p} className={pack === p ? 'on' : ''} onClick={() => setPack(p)} data-testid={`pack-tab-${p}`}>
             {PACK_LABEL[p]} ({ctx.state.packCounts[p].members})
           </button>
         ))}
-      </div>
+      </LiquidSeg>
       <div className="row">
         <span className="label">Giới hạn:</span>
         <input

@@ -59,9 +59,9 @@ Chưa xác minh quyền phân phối lại bundle model cụ thể; không thêm
 | Đường dẫn | Vai trò |
 |---|---|
 | `src/renderer/App.tsx` | Màn hình bắt đầu, workspace, trạng thái và luồng tương tác |
-| `src/renderer/styles.css` | Giao diện hiện tại, bao gồm branding Fit Media |
+| `src/renderer/styles.css` | Giao diện Liquid Glass, tông vàng/cam (không dùng logo, chỉ tên sản phẩm) |
+| `src/renderer/liquid.tsx` | Hiệu ứng kính lỏng: thấu kính SVG, ánh sáng theo con trỏ, thanh chọn trượt — chỉ trình bày |
 | `src/renderer/components/` | Grid, Compare, CullPanel, FacePanel, ExportDialog, SourcePanel, bộ chọn và AI settings |
-| `src/renderer/assets/` | Logo sử dụng trong giao diện |
 | `src/shared/contracts.ts` | Hợp đồng API, dữ liệu và progress; không tự đổi khi chỉ thiết kế UI |
 | `src/preload/index.ts` | Bridge API hạn chế `window.eventstory` |
 | `src/worker/` | Quét ảnh, phân tích, nhóm và AutoCull |
